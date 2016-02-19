@@ -50,42 +50,48 @@ function GetDataFromURL(){
     var query = window.location.search;
     // Skip the leading ?, which should always be there, 
     // but be careful anyway
+    console.log(query);
     var urlQ = "";
     if (query.substring(0, 1) == '?') {
         urlQ = query.substring(1, query.indexOf('+'));
     } 
     var dataQuery = query.substring(query.indexOf('+'), query.length);
+    console.log(urlQ);
+    
 
-    //get environment data
-    var data = dataQuery.split('+'); 
-    
-    //set env data:
-        //day
-    TIME_DAY = parseInt(data[1]);
-        //day
-    TIME_HOUR = parseInt(data[2]);
-        //set last update to one hour ago
-    TIME_LAST_HOUR_UPDATE = TIME_HOUR - 1;
-    
-    //add white spaces if needed (by finding capital characters)
-    for(var i = 1; i < data[3].length; ++i){
-        var s = data[3].substr(i, 1);
-        //check for uppercase
-        if(s == s.toUpperCase()){
-            //insert space
-            console.log('upper');
-            data[3] = data[3].slice(0, i) + ' ' + data[3].slice(i);
-            i += 1;
+    if(urlQ != "?" && dataQuery != null && dataQuery.length > 0){
+        //get environment data
+        var data = dataQuery.split('+'); 
+        
+        //set env data:
+            //day
+        TIME_DAY = parseInt(data[1]);
+            //day
+        TIME_HOUR = parseInt(data[2]);
+            //set last update to one hour ago
+        TIME_LAST_HOUR_UPDATE = TIME_HOUR - 1;
+        
+        //add white spaces if needed (by finding capital characters)
+        for(var i = 1; i < data[3].length; ++i){
+            var s = data[3].substr(i, 1);
+            //check for uppercase
+            if(s == s.toUpperCase()){
+                //insert space
+                console.log('upper');
+                data[3] = data[3].slice(0, i) + ' ' + data[3].slice(i);
+                i += 1;
+            }
         }
+        
+                //building
+        LOCATION_BUILDING_NAME = data[3];
+        
+        //debug
+        console.log(data);
+        console.log(query);
+    } else {
+        urlQ = null;
     }
-    
-            //building
-    LOCATION_BUILDING_NAME = data[3];
-    
-    //debug
-    console.log(data);
-    console.log(query);
-
     //start creation of app with collection of data
     GetClassLectures(['INFR08019_SV1_SEM1', 'INFR08008_SV1_SEM1', 'INFR08023_SV1_SEM1', 'INFR08009_SV1_SEM2'], urlQ);
     //call geolocation script function
@@ -175,9 +181,10 @@ function GetClassLectures(ClassNames, urlExternal){
     //Create URL to access lectures from timetable
     var urlBase = 'https://browser.ted.is.ed.ac.uk/generate?';
     
-    if(urlExternal == null){
+    if(urlExternal == null || ClassNames == null){
+        console.log('no info');
         urlBase = urlBase + 'courses=';
-        
+        //ClassNames = ['INFR08019_SV1_SEM1', 'INFR08008_SV1_SEM1', 'INFR08023_SV1_SEM1', 'INFR08009_SV1_SEM2'];
         //Add courses to url
         for(var i = 0; i < ClassNames.length; ++i){
             urlBase += ClassNames[i] + (i < ClassNames.length - 1? ',' : '');
@@ -215,7 +222,8 @@ function GetClassLectures(ClassNames, urlExternal){
         if(lectureData.length != 0)
             ProcessLecs(lectureData);
         else
-            FillTestLecs(lectureData);
+            GetClassLectures(['INFR08019_SV1_SEM1', 'INFR08008_SV1_SEM1', 'INFR08023_SV1_SEM1', 'INFR08009_SV1_SEM2'], null);
+            //FillTestLecs(lectureData);
     });
     
     /*if(lectureData.length != 0)
@@ -406,7 +414,7 @@ function DrawLectureDataGraph(data, Position, xAxisRate, yAxisRate){
                 //rectangle of cell
                 var recCell = new Rectangle(new Point(gap, gap), (yAxisRate) - gap * 2, yAxisRate - gap * 2);
                 //draw curved cell
-                recCell.center = Position + new Point(x * xAxisRate, y * yAxisRate);
+                recCell.center = Position + new Point(x * xAxisRate, y * yAxisRate) + new Point(0, yAxisRate / 2);
                 var cornerSize = new Size(2, 2);
                 var cell = new Path.RoundRectangle(recCell, cornerSize);
                 cell.fillColor = COLOR_SYMBOL;
