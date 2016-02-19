@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<body id="bod">
+
+<form id="frm1" action="form_action.asp">
+  Class Code: <input type="text" name="fname" value="INFR08019"><br>
+  Mid: <input type="text" name="fname" value="SV1"><br>
+  Semester: <input type="text" name="fname" value="SEM1"><br>
+</form> 
+
+<p id="help">Click "ADD" to add class to timetable. Click "DONE" once finished adding.</p>
+
+<button onclick="saveClass();" id="add">ADD</button>
+
+<p id="demo"></p>
+
+<form id="frm2" action="form_action2.asp">
+  Day of Week(0..4): <input type="text" name="fname" value="1"><br>
+  Time(hr9..19): <input type="text" name="fname" value="18"><br>
+  Location: <input type="text" name="fname" value="DavidHumeTower"><br>
+</form> 
+
+<button onclick="deleteHTML();" id="done">DONE</button>
+
+<p id="help">Set variables of environment for simulation.</p>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+<script>
+//save a list of lecs
+var listLec = [];
+    
+function saveClass() {
+    var x = document.getElementById("frm1");
+    var text = "";
+    for (var i = 0; i < x.length ;i++) {
+        text += x.elements[i].value;
+        
+        if(i != x.length - 1)
+            text += "_";
+    }
+    //add lec to list
+    listLec.push(text);
+    //update document
+    var culmList = "";
+    for(var i = 0; i < listLec.length; ++i){
+        culmList += listLec[i] + ", ";
+    }
+    document.getElementById("demo").innerHTML = culmList;
+    
+    //element.parentNode.removeChild(document.getElementById("frm1"));
+}
+
+function deleteHTML(divId) {
+   /*$("#"+'frm1').remove();
+   $("#"+'add').remove();
+   $("#"+'done').remove();
+   $("#"+'help').remove();
+   $("#"+'demo').remove();*/
+   
+   //get environment data
+    var env = document.getElementById("frm2");
+    var text = "+";
+    for (var i = 0; i < env.length ;i++) {
+        text += env.elements[i].value;
+        
+        if(i != env.length - 1)
+            text += "+";
+    }
+   
+   //encode and send lecture data
+   
+   //Create URL to access lectures from timetable
+    var urlBase = 'https://browser.ted.is.ed.ac.uk/generate?';
+    urlBase = urlBase + 'courses=';
+    
+    //Add courses to url
+    for(var i = 0; i < listLec.length; ++i){
+        urlBase += listLec[i] + (i < listLec.length - 1? ',' : '');
+    }
+    //Add period and format
+    urlBase += '&period=YR&format=json';
+   
+    console.log(urlBase);
+    
+    //localStorage.setItem('lecs', urlBase);
+    
+    //document.location.href = 'main.html';
+    window.location = "main.html?" + urlBase + text;
+}
+
+</script>
+
+</body>
+</html>

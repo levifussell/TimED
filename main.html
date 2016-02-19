@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        /* Scale canvas with resize attribute to full size */
+        canvas[resize] {
+            width: 100%;
+            height: 100%;
+        }
+        </style>
+        
+        
+        <!-- Load the JQuery.js library <--></-->
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        
+		<!-- Load the Paper.js library -->
+		<script type="text/javascript" src="js/paper-full.min.js"></script>
+        <!-- Get Data of timetables -->
+        <!--<script type="text/javascript" src="js/TimetableData.js"></script>-->
+        <!-- Get building data -->
+        <script type="text/javascript" src="js/buildings.js"></script>
+        <!-- Geolocation functions -->
+        <script type="text/javascript" src="js/Geolocation.js"></script>
+		<!-- Define inclined PaperScript associate it with myCanvas -->
+		<script type="text/paperscript" src="js/SimulatorMain.js" canvas="myCanvas"></script>
+        <!--<script type="text/paperscript" src="js/TodayPage.js" canvas="myCanvas"></script>-->
+	</head>
+	<body>        
+		<canvas id="myCanvas" resize="true"></canvas>
+	</body>
+</html>
+
